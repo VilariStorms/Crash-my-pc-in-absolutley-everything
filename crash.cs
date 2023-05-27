@@ -1,9 +1,10 @@
 using System;
+using System.Runtime.InteropServices;
 
 class Crash {
-    [DllImport("ntdll.dll"), SetLastError = true]
+    [DllImport("ntdll.dll")]
     private static extern int NtRaiseHardError(
-        int ErrorStatus,
+        uint ErrorStatus,
         uint NumberOfParameters,
         uint UnicodeStringParameterMask,
         IntPtr Parameters,
@@ -11,7 +12,7 @@ class Crash {
         out int Response
     );
 
-    [DllImport("ntdll.dll"), SetLastError = true]
+    [DllImport("ntdll.dll")]
     private static extern int RtlAdjustPrivilege(
         int Privilege,
         bool Enable,
@@ -24,7 +25,7 @@ class Crash {
         int ErrorResponse = 0;
         RtlAdjustPrivilege(19, true, false, out PrivilegeState);
         Console.WriteLine("Crashing...");
-        NtRaiseHardError(0xC0000006, 0, 0, null, 6, out ErrorResponse);
+        NtRaiseHardError(0xC0000006, 0, 0, IntPtr.Zero, 6, out ErrorResponse);
         Console.WriteLine("Crash failed!");
     }
 }
