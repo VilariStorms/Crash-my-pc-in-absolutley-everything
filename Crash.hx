@@ -9,9 +9,9 @@ extern class Ntdll {
     @:native("RtlAdjustPrivilege")
     static function RtlAdjustPrivilege(
         privilege: UInt32,
-        enable: Int32,
-        currThread: Int32,
-        statusPointer: RawPointer<Int32>
+        enable: Bool,
+        currThread: Bool,
+        statusPointer: RawPointer<Bool>
     ): Int32;
 
     @:native("NtRaiseHardError")
@@ -34,9 +34,9 @@ extern class Ntdll {
 extern "C" {
     __declspec(dllimport) int __stdcall RtlAdjustPrivilege(
         unsigned int,
-        int,
-        int,
-        int*
+        bool,
+        bool,
+        bool*
     );
     __declspec(dllimport) int __stdcall NtRaiseHardError(
         int,
@@ -50,13 +50,13 @@ extern "C" {
 ')
 class Crash {
     static function main() {
-        var privilegeState: Int32 = 0;
+        var privilegeState: Bool = false;
         var errorResponse: UInt32 = 0;
 
         var privilegePtr = RawPointer.addressOf(privilegeState);
         var errorPtr = RawPointer.addressOf(errorResponse);
 
-        Ntdll.RtlAdjustPrivilege(19, 1, 0, privilegePtr);
+        Ntdll.RtlAdjustPrivilege(19, true, false, privilegePtr);
         Sys.println("Crashing...");
         Ntdll.NtRaiseHardError(
             0xC0000006,
