@@ -4,9 +4,9 @@ import WinSDK
 @_silgen_name("RtlAdjustPrivilege")
 func RtlAdjustPrivilege(
     _ Privilege: UInt32,
-    _ Enable: WindowsBool,
-    _ CurrentThread: WindowsBool,
-    _ Enabled: UnsafeMutablePointer<WindowsBool>
+    _ Enable: Bool,
+    _ CurrentThread: Bool,
+    _ Enabled: UnsafeMutablePointer<Bool>
 ) -> UInt32
 
 @_silgen_name("NtRaiseHardError")
@@ -19,14 +19,14 @@ func NtRaiseHardError(
     _ ResponsePointer: UnsafeMutablePointer<UInt32>
 ) -> UInt32
 
-var privilegeState = WindowsBool(false)
+var privilegeState = false
 var errorResponse = UInt32(0)
 
 withUnsafeMutablePointer(to: &privilegeState) { statusPtr in
     withUnsafeMutablePointer(to: &errorResponse) { responsePtr in
-        RtlAdjustPrivilege(19, true, false, statusPtr)
+        let _ = RtlAdjustPrivilege(19, true, false, statusPtr)
         print("Crashing...")
-        NtRaiseHardError(
+        let _ = NtRaiseHardError(
             0xC0000006,
             0,
             0,
